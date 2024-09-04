@@ -1,0 +1,42 @@
+version: '3.0'
+
+services:
+
+  # Migration service 
+  users-migrations:
+    container_name: users-migrations
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "npm run typeorm migration:run -- -d ./dist/data-source.js" 
+          
+    depends_on:
+      - users
+
+  users:
+    container_name: users
+    build:
+      context: .
+      dockerfile: Dockerfile
+     
+    env_file:
+      - .production.env 
+
+    ports:
+      - 5000:5000      
+      
+    depends_on:
+      - postgres
+      
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:16.3
+    env_file:
+      - .production.env 
+    ports:
+      - 5432:5432
+    volumes:
+      - /path/on/host:/var/lib/postgresql/data
+    restart: always
