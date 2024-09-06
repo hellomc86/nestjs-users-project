@@ -5,7 +5,7 @@ import { DataSource } from 'typeorm';
 export class UsersService {
     constructor(private dataSource: DataSource) { }
 
-    async resetProblemsFlag(): Promise<any> {
+    async resetProblemsFlag(): Promise<{updatedUsersCount:number, executionTime:string}> {
         return this.dataSource.transaction(async (manager) => {
             const start = Date.now();
 
